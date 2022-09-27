@@ -9,9 +9,9 @@
       ]
     },
     "xerris.oidccli": {
-      "version": "0.1.0-alpha0022",
+      "version": "0.1.0-alpha0023",
       "commands": [
-        "oidccli"
+        "dotnet-oidccli"
       ]
     }
   }

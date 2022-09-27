@@ -11,13 +11,11 @@ namespace OidcCli;
 
 public class AuthenticateCommand : RootCommand
 {
-    private readonly ILogger<AuthenticateCommand> _logger;
     private readonly ILoggerFactory _loggerFactory;
 
     public AuthenticateCommand(ILogger<AuthenticateCommand> logger, ILoggerFactory loggerFactory)
         : base("Authenticate using OpenID Connect")
     {
-        _logger = logger;
         _loggerFactory = loggerFactory;
 
         var authorityOption = new Option<string>(
@@ -27,7 +25,7 @@ public class AuthenticateCommand : RootCommand
         AddOption(authorityOption);
 
         var clientIdOption = new Option<string>(
-            name: "--clientid",
+            name: "--clientId",
             description: "The client ID (required)");
 
         AddOption(clientIdOption);
@@ -51,24 +49,30 @@ public class AuthenticateCommand : RootCommand
 
         AddOption(audienceOption);
 
-        this.SetHandler(async (authority, clientId, scope, port, audience) =>
+        var diagnosticsOption = new Option<bool>(
+            name: "--diagnostics",
+            description: "Enable diagnostic output (optional)",
+            getDefaultValue: () => false);
+
+        AddOption(diagnosticsOption);
+
+        this.SetHandler(async (authority, clientId, scope, port, audience, diagnostics) =>
         {
             using var cancellationTokenSource = new CancellationTokenSource();
 
-            await AuthenticateAsync(authority, clientId, scope, port, audience,
+            await AuthenticateAsync(authority, clientId, scope, port, audience, diagnostics,
                 cancellationTokenSource.Token).ConfigureAwait(false);
 
-        }, authorityOption, clientIdOption, scopeOption, portOption, audienceOption);
+        }, authorityOption, clientIdOption, scopeOption, portOption, audienceOption, diagnosticsOption);
     }
 
     private async Task AuthenticateAsync(string authority, string clientId, string scope, int? port = null,
-        string? audience = null, CancellationToken cancellationToken = default)
+        string? audience = null, bool diagnostics = false, CancellationToken cancellationToken = default)
     {
         port ??= GetRandomUnusedPort();
 
         var options = new OidcClientOptions
         {
-            LoggerFactory = _loggerFactory,
             Policy = new Policy { RequireAccessTokenHash = false },
             Authority = authority,
             ClientId = clientId,
@@ -79,6 +83,9 @@ public class AuthenticateCommand : RootCommand
             Scope = scope,
             Browser = new SystemBrowser(port.Value)
         };
+
+        if (diagnostics)
+            options.LoggerFactory = _loggerFactory;
 
         var oidcClient = new OidcClient(options);
 
@@ -113,7 +120,8 @@ public class AuthenticateCommand : RootCommand
             Claims = result.User.Claims.Select(c => new Output.Claim { Type = c.Type, Value = c.Value })
         };
 
-        _logger.LogInformation(JsonSerializer.Serialize(output, jsonOptions));
+        // We specifically use Console.WriteLine instead of a logger here to make the command output easier to parse.
+        Console.WriteLine(JsonSerializer.Serialize(output, jsonOptions));
     }
 
     private static int GetRandomUnusedPort()
