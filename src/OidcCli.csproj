@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
 
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>oidccli</ToolCommandName>
+    <ToolCommandName>dotnet-oidccli</ToolCommandName>
     <PackageId>Xerris.OidcCli</PackageId>
     <Authors>Xerris Inc.</Authors>
     <Description>OpenID Connect &amp; OAuth 2.0 CLI client</Description>
