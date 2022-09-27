@@ -21,6 +21,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [GitHubActions(
     "publish",
     GitHubActionsImage.UbuntuLatest,
+    FetchDepth = 0,
     OnPushBranches = new[] { MainBranch, $"{ReleaseBranchPrefix}/*" },
     InvokedTargets = new []{ nameof(Publish) },
     ImportSecrets = new[] { nameof(NuGetApiKey) })]
