@@ -41,7 +41,7 @@ public class AuthenticateCommand : RootCommand
 
         var portOption = new Option<int?>(
             name: "--port",
-            description: "The callback port (optional, defaults to a random port)"); // todo: default to random value
+            description: "The callback port (optional, defaults to a random port)");
 
         AddOption(portOption);
 

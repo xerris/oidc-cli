@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using static Nuke.Common.IO.FileSystemTasks;
@@ -13,11 +15,15 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     GitHubActionsImage.WindowsLatest,
     GitHubActionsImage.UbuntuLatest,
     GitHubActionsImage.MacOsLatest,
-    OnPushBranches = new[] { MainBranch, $"{ReleaseBranchPrefix}/*" },
+    FetchDepth = 0,
     OnPullRequestBranches = new[] { MainBranch },
-    InvokedTargets = new[] { nameof(Compile) },
-    CacheKeyFiles = new[] { "global.json", "source/**/*.csproj" },
-    EnableGitHubToken = true)]
+    InvokedTargets = new[] { nameof(Compile) })]
+[GitHubActions(
+    "publish",
+    GitHubActionsImage.UbuntuLatest,
+    OnPushBranches = new[] { MainBranch, $"{ReleaseBranchPrefix}/*" },
+    InvokedTargets = new []{ nameof(Publish) },
+    ImportSecrets = new[] { nameof(NuGetApiKey) })]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -32,6 +38,7 @@ class Build : NukeBuild
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [GitRepository] [Required] GitRepository GitRepository;
+    [GitVersion(Framework = "net5.0", NoFetch = true)] [Required] GitVersion GitVersion;
 
     [Solution] readonly Solution Solution;
 
@@ -78,14 +85,25 @@ class Build : NukeBuild
                 .SetConfiguration(Configuration)
                 .SetNoBuild(SucceededTargets.Contains(Compile))
                 .SetOutputDirectory(OutputDirectory)
-                .SetRepositoryUrl(GitRepository.HttpsUrl));
+                .SetRepositoryUrl(GitRepository.HttpsUrl)
+                .SetVersion(GitVersion.NuGetVersionV2));
         });
+    
+    [Parameter][Secret] readonly string NuGetApiKey;
+
+    IEnumerable<AbsolutePath> PackageFiles => OutputDirectory.GlobFiles("*.nupkg");
 
     Target Publish => _ => _
         .DependsOn(Pack)
         .Consumes(Pack)
+        .Requires(() => NuGetApiKey)
         .Executes(() =>
         {
+            DotNetNuGetPush(_ => _
+                .SetSource("https://api.nuget.org/v3/index.json")
+                .SetApiKey(NuGetApiKey)
+                .CombineWith(PackageFiles, (_, v) => _
+                        .SetTargetPath(v)));
         });
 
 }
