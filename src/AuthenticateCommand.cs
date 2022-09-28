@@ -14,32 +14,46 @@ public class AuthenticateCommand : RootCommand
     private readonly ILoggerFactory _loggerFactory;
 
     public AuthenticateCommand(ILogger<AuthenticateCommand> logger, ILoggerFactory loggerFactory)
-        : base("Authenticate using OpenID Connect")
+        : base("Interactively authenticate using OpenID Connect")
     {
         _loggerFactory = loggerFactory;
 
         var authorityOption = new Option<string>(
             name: "--authority",
-            description: "The authority (required)");
+            description: "The OAuth2 authority to authenticate with")
+        {
+            IsRequired = true
+        };
+
+        authorityOption.AddAlias("-a");
 
         AddOption(authorityOption);
 
         var clientIdOption = new Option<string>(
             name: "--clientId",
-            description: "The client ID (required)");
+            description: "The OAuth2 client ID")
+        {
+            IsRequired = true
+        };
+
+        clientIdOption.AddAlias("-c");
 
         AddOption(clientIdOption);
 
         var scopeOption = new Option<string>(
             name: "--scope",
-            description: "The scope (optional, defaults to 'openid')",
+            description: "The scope(s) to use, separated by spaces",
             getDefaultValue: () => "openid");
+
+        scopeOption.AddAlias("-s");
 
         AddOption(scopeOption);
 
         var portOption = new Option<int?>(
             name: "--port",
-            description: "The callback port (optional, defaults to a random port)");
+            description: "The callback port to use in redirection. Defaults to a random port.");
+
+        portOption.AddAlias("-p");
 
         AddOption(portOption);
 
