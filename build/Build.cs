@@ -23,7 +23,8 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     GitHubActionsImage.UbuntuLatest,
     FetchDepth = 0,
     OnPushBranches = new[] { MainBranch, $"{ReleaseBranchPrefix}/*" },
-    InvokedTargets = new []{ nameof(Publish) },
+    OnPushTags = new[] { $"v*" },
+    InvokedTargets = new[] { nameof(Publish) },
     ImportSecrets = new[] { nameof(NuGetApiKey) })]
 class Build : NukeBuild
 {
@@ -33,13 +34,13 @@ class Build : NukeBuild
     ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///   - Microsoft VSCode           https://nuke.build/vscode
 
-    public static int Main () => Execute<Build>(x => x.Compile);
+    public static int Main() => Execute<Build>(x => x.Compile);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
-    [GitRepository] [Required] GitRepository GitRepository;
-    [GitVersion(Framework = "net5.0", NoFetch = true)] [Required] GitVersion GitVersion;
+    [GitRepository][Required] GitRepository GitRepository;
+    [GitVersion(Framework = "net5.0", NoFetch = true)][Required] GitVersion GitVersion;
 
     [Solution] readonly Solution Solution;
 
@@ -89,7 +90,7 @@ class Build : NukeBuild
                 .SetRepositoryUrl(GitRepository.HttpsUrl)
                 .SetVersion(GitVersion.NuGetVersionV2));
         });
-    
+
     [Parameter][Secret] readonly string NuGetApiKey;
 
     IEnumerable<AbsolutePath> PackageFiles => OutputDirectory.GlobFiles("*.nupkg");
