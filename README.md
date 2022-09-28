@@ -1,8 +1,20 @@
 # OidcCli
-.NET Tool for running IdentityModel.OidcClient from the Command Line
 
-install with
+[![continuous](https://github.com/xerris/OidcCli/actions/workflows/continuous.yml/badge.svg)](https://github.com/xerris/OidcCli/actions/workflows/continuous.yml) [![publish](https://github.com/xerris/OidcCli/actions/workflows/publish.yml/badge.svg)](https://github.com/xerris/OidcCli/actions/workflows/publish.yml)
 
-`dotnet tool install -g IdentityModel.OidcCli`
+.NET Tool for running IdentityModel.OidcClient from the Command Line. Install
+with:
 
-![OidcCli](https://user-images.githubusercontent.com/1454075/67259787-fc33c100-f497-11e9-8465-87590c5b78da.gif)
+```powershell
+dotnet tool install -g Xerris.OidcCli
+```
+
+For information about the commands available, run:
+
+```powershell
+dotnet oidccli -h
+```
+
+## Acknowledgements
+
+This is a mostly overhauled fork of the [IdentityModel OidcCli tool](https://github.com/IdentityModel/OidcCli)
