@@ -1,4 +1,4 @@
 {
   "$schema": "./build.schema.json",
-  "Solution": "OidcCli.sln"
+  "Solution": "Xerris.OidcCli.sln"
 }
