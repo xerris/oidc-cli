@@ -1,6 +1,6 @@
 # OidcCli
 
-[![continuous](https://github.com/xerris/OidcCli/actions/workflows/continuous.yml/badge.svg)](https://github.com/xerris/OidcCli/actions/workflows/continuous.yml) [![publish](https://github.com/xerris/OidcCli/actions/workflows/publish.yml/badge.svg)](https://github.com/xerris/OidcCli/actions/workflows/publish.yml)
+[![continuous](https://github.com/xerris/OidcCli/actions/workflows/continuous.yml/badge.svg)](https://github.com/xerris/OidcCli/actions/workflows/continuous.yml) [![release](https://github.com/xerris/OidcCli/actions/workflows/release.yml/badge.svg)](https://github.com/xerris/OidcCli/actions/workflows/release.yml)
 
 .NET Tool for running IdentityModel.OidcClient from the Command Line. Install
 with:
