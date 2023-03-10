@@ -13,7 +13,7 @@ internal class Output
     public string? RefreshToken { get; set; }
 
     public DateTimeOffset? ExpiresAt { get; set; }
-        
+
     public class Claim
     {
         public string Type { get; set; } = null!;
