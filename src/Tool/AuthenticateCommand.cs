@@ -116,13 +116,13 @@ public class AuthenticateCommand : RootCommand
 
         var options = new OidcClientOptions
         {
-            Policy =policy,
+            Policy = policy,
             Authority = authority,
             ClientId = clientId,
             FilterClaims = false,
             LoadProfile = true,
-            RedirectUri = $"http://127.0.0.1:{port}",
-            PostLogoutRedirectUri = $"http://127.0.0.1:{port}",
+            RedirectUri = $"http://localhost:{port}",
+            PostLogoutRedirectUri = $"http://localhost:{port}",
             Scope = scope,
             Browser = new SystemBrowser(port.Value)
         };
