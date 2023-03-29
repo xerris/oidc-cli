@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace OidcCli;
+namespace Xerris.OidcCli.Tool;
 
 /// <summary>
 ///     Opens the default system browser for the purposes of performing an OpenID Connect Authorization Code

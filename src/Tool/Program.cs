@@ -1,7 +1,7 @@
 ﻿using System.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OidcCli;
+using Xerris.OidcCli.Tool;
 
 var serviceProvider = BuildServiceProvider();
 

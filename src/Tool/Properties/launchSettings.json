@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Xerris.OidcCli.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}

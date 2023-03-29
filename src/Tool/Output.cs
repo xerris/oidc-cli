@@ -1,4 +1,4 @@
-﻿namespace OidcCli;
+﻿namespace Xerris.OidcCli.Tool;
 
 internal class Output
 {

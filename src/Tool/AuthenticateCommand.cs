@@ -8,7 +8,7 @@ using IdentityModel.OidcClient;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
-namespace OidcCli;
+namespace Xerris.OidcCli.Tool;
 
 public class AuthenticateCommand : RootCommand
 {
