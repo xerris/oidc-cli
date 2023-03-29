@@ -17,6 +17,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 partial class Build : NukeBuild,
     IHasGitRepository,
     IHasVersioning,
+    IClean,
     IRestore,
     IFormat,
     ICompile,
@@ -35,21 +36,10 @@ partial class Build : NukeBuild,
     readonly Solution Solution;
     Solution IHasSolution.Solution => Solution;
 
-    Target Clean => _ => _
-        .Before<IRestore>()
-        .Executes(() =>
-        {
-            DotNetClean(_ => _
-                .SetProject(Solution));
-
-            EnsureCleanDirectory(FromComponent<IHasArtifacts>().ArtifactsDirectory);
-        });
-
     public IEnumerable<string> ExcludedFormatPaths => Enumerable.Empty<string>();
 
     Target ICompile.Compile => _ => _
         .Inherit<ICompile>()
-        .DependsOn(Clean)
         .DependsOn<IFormat>(x => x.VerifyFormat);
 
     Configure<DotNetPublishSettings> ICompile.PublishSettings => _ => _
