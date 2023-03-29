@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace OidcCli;
 
@@ -70,30 +71,58 @@ public class AuthenticateCommand : RootCommand
 
         AddOption(diagnosticsOption);
 
-        this.SetHandler(async (authority, clientId, scope, port, audience, diagnostics) =>
-        {
-            using var cancellationTokenSource = new CancellationTokenSource();
+        var disableEndpointValidationOption = new Option<bool>(
+            name: "--disableEndpointValidation",
+            description: "Disable validation of authorization, token, and userinfo endpoints in the providers OpenID " +
+                         "configuration (optional)",
+            getDefaultValue: () => false);
 
-            await AuthenticateAsync(authority, clientId, scope, port, audience, diagnostics,
-                cancellationTokenSource.Token).ConfigureAwait(false);
+        AddOption(disableEndpointValidationOption);
 
-        }, authorityOption, clientIdOption, scopeOption, portOption, audienceOption, diagnosticsOption);
+        this.SetHandler(async (authority, clientId, scope, port, audience, diagnostics, disableEndpointValidation) =>
+            {
+                using var cancellationTokenSource = new CancellationTokenSource();
+
+                await AuthenticateAsync(authority, clientId, scope, port, audience, diagnostics,
+                    disableEndpointValidation,
+                    cancellationTokenSource.Token).ConfigureAwait(false);
+
+            }, authorityOption, clientIdOption, scopeOption, portOption, audienceOption, diagnosticsOption,
+            disableEndpointValidationOption);
     }
 
     private async Task AuthenticateAsync(string authority, string clientId, string scope, int? port = null,
-        string? audience = null, bool diagnostics = false, CancellationToken cancellationToken = default)
+        string? audience = null, bool diagnostics = false, bool disableEndpointValidation = false, CancellationToken cancellationToken = default)
     {
         port ??= GetRandomUnusedPort();
 
+        var policy = new Policy
+        {
+            RequireAccessTokenHash = false
+        };
+
+        if (disableEndpointValidation)
+        {
+            policy.Discovery = new DiscoveryPolicy
+            {
+                EndpointValidationExcludeList = new List<string>
+                {
+                    "authorization_endpoint",
+                    "token_endpoint",
+                    "userinfo_endpoint"
+                }
+            };
+        }
+
         var options = new OidcClientOptions
         {
-            Policy = new Policy { RequireAccessTokenHash = false },
+            Policy = policy,
             Authority = authority,
             ClientId = clientId,
             FilterClaims = false,
             LoadProfile = true,
-            RedirectUri = $"http://127.0.0.1:{port}",
-            PostLogoutRedirectUri = $"http://127.0.0.1:{port}",
+            RedirectUri = $"http://localhost:{port}",
+            PostLogoutRedirectUri = $"http://localhost:{port}",
             Scope = scope,
             Browser = new SystemBrowser(port.Value)
         };
