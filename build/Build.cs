@@ -6,8 +6,6 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Xerris.Nuke.Components;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 // ReSharper disable RedundantExtendsListEntry
 // ReSharper disable InconsistentNaming
@@ -48,12 +46,7 @@ partial class Build : NukeBuild,
 
     Target IPush.Push => _ => _
         .Inherit<IPush>()
-        .Consumes(FromComponent<IPush>().Pack)
-        .Requires(() =>
-            FromComponent<IHasGitRepository>().GitRepository.Tags.Any())
+        .Consumes(this.FromComponent<IPush>().Pack)
+        .Requires(() => this.FromComponent<IHasGitRepository>().GitRepository.Tags.Any())
         .WhenSkipped(DependencyBehavior.Execute);
-
-    T FromComponent<T>()
-        where T : INukeBuild
-        => (T)(object)this;
 }
