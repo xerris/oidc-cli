@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2E9463E5-822
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xerris.OidcCli.Tool", "src\Tool\Xerris.OidcCli.Tool.csproj", "{1C4A00AC-727D-454D-9A74-8C0191648ED5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{07F7A72F-1EDF-4F4D-8405-5F28646EF83E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{DD2E83B3-1EAA-4628-A9EB-F6FC3ED1AEAA}"
 EndProject
 Global
@@ -29,7 +27,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1C4A00AC-727D-454D-9A74-8C0191648ED5} = {2E9463E5-8227-4529-8AC4-BE1069778C42}
-		{DD2E83B3-1EAA-4628-A9EB-F6FC3ED1AEAA} = {07F7A72F-1EDF-4F4D-8405-5F28646EF83E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6005A8DC-5BD5-46F1-9229-12D0B55BFC2C}
